@@ -1,0 +1,45 @@
+syntax = "proto3";
+package pb;
+option go_package = "./;pb";
+import "google/protobuf/empty.proto";
+
+enum ServiceType {
+  CENTER = 0; //服务中心
+  DOWNLOAD_CLIENT = 1; //web客户端
+  DOWNLOAD_JUMP = 2; //跳转
+  DOWNLOAD_SERVER = 50; //下载地址请求
+  CHAT_SERVER = 51; //获取聊天链接
+}
+
+enum Scheme {
+  HTTP = 0;
+  HTTPS = 1;
+  GRPC = 2;
+}
+
+message Service {
+  ServiceType type = 1;
+  string id = 2;
+  string addr = 3;
+  int32 port = 4;
+  Scheme scheme = 5;
+}
+
+message Services {
+  ServiceType type = 1;
+  repeated Service list = 2;
+}
+
+message LogoutReq {
+  string serviceId = 1;
+}
+
+message ServicesReq {
+  ServiceType type = 1;
+}
+
+service CenterService{
+  rpc Register(Service) returns (google.protobuf.Empty);
+  rpc Logout(LogoutReq) returns (google.protobuf.Empty);
+  rpc GetServices(ServicesReq) returns (Services);
+}
